@@ -1,14 +1,14 @@
+/* eslint-disable no-console */
 const Launchpad = require(`./lib`)
 
-const lp = new Launchpad(/^Launchpad/, { ignore0Velocity: true })
+const lp = new Launchpad()
 
 // our application state
 const metaRow = {}
 const metaCol = {}
 const grid = {}
 
-// eslint-disable-next-line no-console
-lp.onMessage(console.log.bind(console))
+// lp.onMessage(console.log.bind(console))
 
 lp.onMetaRowPress(note => {
   const color = metaRow[note] ? lp.colors.off : lp.colors.red
@@ -28,4 +28,4 @@ lp.onGridPress(note => {
   grid[note] = !grid[note]
 })
 
-lp.send([176, 0, 0])
+lp.allOff()
