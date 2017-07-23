@@ -1,0 +1,23 @@
+{
+  "name": "@lokua/launchpad",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "example": "node example"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lokua/launchpad.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@lokua/midi-util": "github:lokua/midi-util",
+    "midi": "github:Cycling74/node-midi",
+    "segfault-handler": "~1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-lokua": "~3.0.0"
+  }
+}
