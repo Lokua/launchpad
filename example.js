@@ -4,27 +4,27 @@ const Launchpad = require(`./lib`)
 const lp = new Launchpad()
 
 // our application state
-const metaRow = {}
-const metaCol = {}
+const pages = {}
+const scenes = {}
 const grid = {}
 
 // lp.onMessage(console.log.bind(console))
 
-lp.onMetaRowPress(note => {
-  const color = metaRow[note] ? lp.colors.off : lp.colors.red
-  lp.metaRowSet(note, color)
-  metaRow[note] = !metaRow[note]
+lp.onPage(note => {
+  const color = pages[note] ? lp.colors.off : lp.colors.red
+  lp.setPage(note, color)
+  pages[note] = !pages[note]
 })
 
-lp.onMetaColPress(note => {
-  const color = metaCol[note] ? lp.colors.off : lp.colors.amber
-  lp.metaColSet(note, color)
-  metaCol[note] = !metaCol[note]
+lp.onScene(note => {
+  const color = scenes[note] ? lp.colors.off : lp.colors.amber
+  lp.setScene(note, color)
+  scenes[note] = !scenes[note]
 })
 
-lp.onGridPress(note => {
+lp.onGrid(note => {
   const color = grid[note] ? lp.colors.off : lp.colors.green
-  lp.gridSet(note, color)
+  lp.setGrid(note, color)
   grid[note] = !grid[note]
 })
 

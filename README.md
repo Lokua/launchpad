@@ -42,17 +42,17 @@ An exact string or regexp. Defaults to `/^Launchpad/`
 + `greenLow`
 + `green`
 
-##### [`#onMetaRowPress(fn)`](#onMetaRowPress)
+##### [`#onPage(fn)`](#onPage)
 
 Fired when a button in the top "special" row (buttons labeled 1-8) is pressed.
 `fn` is called with `(note, value)`.
 
-##### [`#onMetaColPress(fn)`](#onMetaColPress)
+##### [`#onScene(fn)`](#onScene)
 
-Fired when a button in the right-most column (those labelled A-H) is pressed.
+Fired when a button in the right-most column (labelled A-H) is pressed.
 `fn` is called with `(note, value)`.
 
-##### [`#onGridPress(fn)`](#onGridPress)
+##### [`#onGrid(fn)`](#onGrid)
 
 Fired when a button in the grid is pressed. `fn` is called with `(note, value)`.
 
@@ -66,15 +66,15 @@ otherwise the library will handle that automatically on process termination.
 
 Turn all buttons on the Launchpad off
 
-##### [`#metaRowSet(number, color)`](#metaRowSet)
+##### [`#setPage(number, color)`](#setPage)
 
 Set the color of a button in the top row
 
-##### [`#metaColSet(number, color)`](#metaColSet)
+##### [`#setScene(number, color)`](#setScene)
 
 Set the color of a button in the right column
 
-##### [`#gridSet(number, color)`](#gridSet)
+##### [`#setGrid(number, color)`](#setGrid)
 
 Set the color of a button in the grid
 
