@@ -1,7 +1,7 @@
 {
   "name": "@lokua/launchpad",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.0.3",
+  "main": "lib/index.js",
   "scripts": {
     "start": "node .",
     "dev": "nodemon ./lib/index.js",
@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@lokua/midi-util": "github:lokua/midi-util",
+    "@lokua/midi-util": "0.0.3",
     "midi": "github:Cycling74/node-midi",
     "segfault-handler": "~1.0.0"
   },

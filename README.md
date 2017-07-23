@@ -1,10 +1,21 @@
 # launchpad
 
-Node.js script to control a Novation Launchpad MIDI controller.
+Node.js program to control a Novation Launchpad MIDI controller.
 Attach handlers to react when buttons are pressed and set their colors
 according to your program's logic.
 
 See [./example.js](example.js) for a basic usage example.
+
+## Install
+
+`launchpad` has been developed on node@8.1.4 and npm@5.3.0, though should work with any node
+installation that supports arrow functions, const, let, object property shorthand, destructuring.
+
+```sh
+npm i @lokua/launchpad --save
+# or
+yarn add @lokua/launchpad --save
+```
 
 ## API
 
