@@ -28,4 +28,4 @@ lp.onGridPress(note => {
   grid[note] = !grid[note]
 })
 
-lp.send([176, 0, 0])
+lp.allOff()
