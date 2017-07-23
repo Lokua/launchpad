@@ -44,11 +44,13 @@ An exact string or regexp. Defaults to `/^Launchpad/`
 
 ##### [`#onMetaRowPress(fn)`](#onMetaRowPress)
 
-Fired when a button in the top "special" row (buttons labeled 1-8) is pressed. `fn` is called with `(note, value)`.
+Fired when a button in the top "special" row (buttons labeled 1-8) is pressed.
+`fn` is called with `(note, value)`.
 
 ##### [`#onMetaColPress(fn)`](#onMetaColPress)
 
-Fired when a button in the right-most column (those labelled A-H) is pressed. `fn` is called with `(note, value)`.
+Fired when a button in the right-most column (those labelled A-H) is pressed.
+`fn` is called with `(note, value)`.
 
 ##### [`#onGridPress(fn)`](#onGridPress)
 
@@ -57,22 +59,22 @@ Fired when a button in the grid is pressed. `fn` is called with `(note, value)`.
 ##### [`#closePorts()`](#closePorts)
 
 Close the internal ports used to communicate with Launchpad. This only
-needs to be called if you wish to kill connections while your program is still running, otherwise the library will handle that automatically on process
-termination.
+needs to be called if you wish to kill connections while your program is still running,
+otherwise the library will handle that automatically on process termination.
 
 ##### [`#allOff()`](#allOff)
 
 Turn all buttons on the Launchpad off
 
-##### [`#metaRowSet(note, color)`](#metaRowSet)
+##### [`#metaRowSet(number, color)`](#metaRowSet)
 
 Set the color of a button in the top row
 
-##### [`#metaColSet(note, color)`](#metaColSet)
+##### [`#metaColSet(number, color)`](#metaColSet)
 
 Set the color of a button in the right column
 
-##### [`#gridSet(note, color)`](#gridSet)
+##### [`#gridSet(number, color)`](#gridSet)
 
 Set the color of a button in the grid
 
