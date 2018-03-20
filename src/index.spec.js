@@ -31,6 +31,11 @@ test('does not throw', () => assert.doesNotThrow(LP.create))
 test('.isPage', () => {
   pageNumbers.forEach(x => {
     assert.ok(LP.isPage(176, x))
+  })
+  sceneNumbers.forEach(x => {
+    assert.ok(!LP.isPage(144, x))
+  })
+  gridNumbers.forEach(x => {
     assert.ok(!LP.isPage(144, x))
   })
 })
@@ -38,13 +43,23 @@ test('.isPage', () => {
 test('.isScene', () => {
   sceneNumbers.forEach(x => {
     assert.ok(LP.isScene(144, x))
+  })
+  pageNumbers.forEach(x => {
     assert.ok(!LP.isScene(176, x))
+  })
+  gridNumbers.forEach(x => {
+    assert.ok(!LP.isScene(144, x))
   })
 })
 
 test('.isGrid', () => {
   gridNumbers.forEach(x => {
     assert.ok(LP.isGrid(144, x))
+  })
+  sceneNumbers.forEach(x => {
+    assert.ok(!LP.isGrid(144, x))
+  })
+  pageNumbers.forEach(x => {
     assert.ok(!LP.isGrid(176, x))
   })
 })
@@ -137,4 +152,46 @@ test('.on*', () => {
     input.fn({ data: [144, x, 1] })
     assert.deepEqual(last.get('grid'), [zeroUpTo64[i], 1])
   })
+})
+
+test('.on* (ignore0Velocity)', () => {
+  const last = new Map()
+
+  const input = {
+    addEventListener(event, fn) {
+      this.fn = fn
+    }
+  }
+
+  const output = {
+    send(message) {
+      this.lastMessage = message
+    }
+  }
+
+  const lp = new LP(input, output)
+
+  lp.onPage((note, value) => {
+    last.set('page', [note, value])
+  })
+  lp.onScene((note, value) => {
+    last.set('scene', [note, value])
+  })
+  lp.onGrid((note, value) => {
+    last.set('grid', [note, value])
+  })
+
+  pageNumbers.forEach((x, i) => {
+    input.fn({ data: [176, x, 0] })
+  })
+
+  sceneNumbers.forEach((x, i) => {
+    input.fn({ data: [144, x, 0] })
+  })
+
+  gridNumbers.forEach((x, i) => {
+    input.fn({ data: [144, x, 0] })
+  })
+
+  assert.equal(last.size, 0)
 })

@@ -1,20 +1,19 @@
 class Launchpad {
   static isPage(status) {
-    return status >= 176 && status < 192
+    return status === 176
   }
 
   static isScene(status, note) {
-    return !Launchpad.isPage(status) && note % 8 === 0 && (note / 8) % 2 === 1
+    return status === 144 && note % 8 === 0 && (note / 8) % 2 === 1
   }
 
   static isGrid(status, note) {
-    return !(Launchpad.isPage(status) || Launchpad.isScene(status, note))
+    return status === 144 && note % 16 < 8
   }
 
   static controllerToPage(cc) {
     return cc - 104
   }
-
   static pageToController(page) {
     return page + 104
   }
@@ -55,15 +54,20 @@ class Launchpad {
     return port && port.constructor && port.constructor.name === 'NodeMidiInput'
   }
 
-  static create(...args) {
-    return new Launchpad(...args)
-  }
-
   constructor(input, output, config = {}) {
-    this.config = Object.assign({}, Launchpad.defaultConfig, config)
+    this.config = Object.assign(
+      { isNodeMidi: Launchpad.isNodeMidiInput(input) },
+      Launchpad.defaultConfig,
+      config
+    )
+
     this.input = input
     this.output = output
-    this.handlers = []
+    this.handlers = new Map()
+    this.handlers.set('page', [])
+    this.handlers.set('scene', [])
+    this.handlers.set('grid', [])
+    this.handlers.set('all', [])
 
     if (!this.input) {
       process.env.NODE_ENV !== 'test' &&
@@ -79,7 +83,7 @@ class Launchpad {
       this.output = Launchpad.createOutputStub()
     }
 
-    if (Launchpad.isNodeMidiInput(input)) {
+    if (this.config.isNodeMidi) {
       this.messageHandler = (_, data) => {
         this.handleMessage(data)
       }
@@ -92,92 +96,64 @@ class Launchpad {
 
       this.input.addEventListener('midimessage', this.messageHandler)
     }
-  }
 
-  handleMessage(data) {
-    this.handlers.forEach(h => {
-      h(...data)
+    ;[
+      'controllerToPage',
+      'pageToController',
+      'noteToScene',
+      'sceneToNote',
+      'noteToGrid',
+      'gridToNote'
+    ].forEach(key => {
+      this[key] = this.config.normalize
+        ? value => Launchpad[key](value)
+        : x => x
     })
-  }
-
-  get normalize() {
-    return this.config.normalize
-  }
-
-  controllerToPage(cc) {
-    return this.normalize ? Launchpad.controllerToPage(cc) : cc
-  }
-
-  pageToController(page) {
-    return this.normalize ? Launchpad.pageToController(page) : page
-  }
-
-  noteToScene(note) {
-    return this.normalize ? Launchpad.noteToScene(note) : note
-  }
-
-  sceneToNote(scene) {
-    return this.normalize ? Launchpad.sceneToNote(scene) : scene
-  }
-
-  noteToGrid(note) {
-    return this.normalize ? Launchpad.noteToGrid(note) : note
-  }
-
-  gridToNote(number) {
-    return this.normalize ? Launchpad.gridToNote(number) : number
-  }
-
-  send(...message) {
-    const sendMethod = this.config.isNodeMidi ? 'sendMessage' : 'send'
-    this.output[sendMethod](message)
-  }
-
-  allOff() {
-    this.send(176, 0, 0)
   }
 
   shouldIgnore(value) {
     return value === 0 && this.config.ignore0Velocity
   }
 
-  onMessage(fn) {
-    this.handlers.push(fn)
-  }
+  handleMessage([status, data1, data2]) {
+    this.handlers.get('all').forEach(fn => {
+      fn(status, data1, data2)
+    })
 
-  shouldIgnoreIncomingPage(status, value) {
-    return !Launchpad.isPage(status) || this.shouldIgnore(value)
-  }
+    if (this.shouldIgnore(data2)) {
+      return
+    }
 
-  shouldIgnoreIncomingScene(status, note, value) {
-    return !Launchpad.isScene(status, note) || this.shouldIgnore(value)
-  }
+    const handlersKey = Launchpad.isGrid(status, data1)
+      ? 'grid'
+      : Launchpad.isPage(status) ? 'page' : 'scene'
 
-  shouldIgnoreIncomingGrid(status, note, value) {
-    return !Launchpad.isGrid(status, note) || this.shouldIgnore(value)
-  }
+    const handlers = this.handlers.get(handlersKey)
 
-  onPage(fn) {
-    this.handlers.push((status, cc, value) => {
-      if (!this.shouldIgnoreIncomingPage(status, value)) {
-        fn(this.controllerToPage(cc), value)
-      }
+    handlers.forEach(h => {
+      h(status, data1, data2)
     })
   }
 
-  onScene(fn) {
-    this.handlers.push((status, note, value) => {
-      if (!this.shouldIgnoreIncomingScene(status, note, value)) {
-        fn(this.noteToScene(note), value)
-      }
+  onMessage(callback) {
+    this.handlers.get('all').push(callback)
+  }
+
+  onPage(callback) {
+    this.handlers.get('page').push((status, cc, value) => {
+      callback(this.controllerToPage(cc), value)
     })
   }
 
-  onGrid(fn) {
-    this.handlers.push((status, note, value) => {
-      if (!this.shouldIgnoreIncomingGrid(status, note, value)) {
-        fn(this.noteToGrid(note), value)
-      }
+  onScene(callback) {
+    this.handlers.get('scene').push((status, note, value) => {
+      callback(this.noteToScene(note), value)
+    })
+  }
+
+  onGrid(callback) {
+    this.handlers.get('grid').push((status, note, value) => {
+      callback(this.noteToGrid(note), value)
     })
   }
 
@@ -191,6 +167,27 @@ class Launchpad {
 
   setGrid(number, color) {
     this.send(144, this.gridToNote(number), color)
+  }
+
+  allOff() {
+    this.send(176, 0, 0)
+  }
+
+  send(...message) {
+    const sendMethod = this.config.isNodeMidi ? 'sendMessage' : 'send'
+    this.output[sendMethod](message)
+  }
+
+  destroy() {
+    this.handlers.clear()
+
+    if (this.config.isNodeMidi) {
+      this.input.removeListener('message', this.messageHandler)
+    } else {
+      this.input.removeEventListener('midimessage', this.messageHandler)
+    }
+
+    delete this.messageHandler
   }
 }
 

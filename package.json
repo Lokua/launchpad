@@ -6,7 +6,9 @@
   "scripts": {
     "build:dev": "webpack --mode development",
     "build": "webpack -- --mode production",
-    "test": "node src/index.spec"
+    "test": "node src/index.spec",
+    "example:node": "node examples/node",
+    "example:browser": "open examples/browser.html"
   },
   "repository": {
     "type": "git",

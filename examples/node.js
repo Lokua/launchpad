@@ -1,13 +1,11 @@
 const midi = require('midi')
 const Launchpad = require('../src/index')
 
-const findPortNumber = findPortNumberByRegExp(/launchpad\smini/i)
 const input = new midi.input()
 const output = new midi.output()
+const findPortNumber = findPortNumberByRegExp(/Launchpad/)
 input.openPort(findPortNumber('input'))
 output.openPort(findPortNumber('output'))
-
-console.info(input.constructor.name)
 
 const launchpad = new Launchpad(input, output)
 
@@ -39,6 +37,10 @@ launchpad.onGrid(note => {
   launchpad.setGrid(note, color)
   grid[note] = !grid[note]
 })
+
+setTimeout(() => {
+  launchpad.destroy()
+}, 1000)
 
 function findPortNumberByRegExp(regExp) {
   return portType => {

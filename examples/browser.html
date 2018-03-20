@@ -11,7 +11,7 @@ open the console
 <script src="../dist/Launchpad.js"></script>
 <script>
 navigator.requestMIDIAccess().then(access => {
-  const findPort = findPortByRegExp(/launchpad\smini/i)
+  const findPort = findPortByRegExp(/Launchpad/)
   const input = findPort(access.inputs)
   const output = findPort(access.outputs)
 

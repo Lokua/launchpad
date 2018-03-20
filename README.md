@@ -85,21 +85,27 @@ fire regardless of the `ignore0Velicty` option. `callback` will be called with
 This method is particularly useful when debugging, for example you can
 `launchpad.onMessage(console.log)` to see all incoming messages.
 
-##### [`#allOff()`](#allOff)
+##### [`#allOff()`](#all-off)
 
 Turn all buttons on the Launchpad off
 
-##### [`#setPage(number, color)`](#setPage)
+##### [`#setPage(number, color)`](#set-page)
 
 Set the color of a button in the top row
 
-##### [`#setScene(number, color)`](#setScene)
+##### [`#setScene(number, color)`](#set-scene)
 
 Set the color of a button in the right column
 
-##### [`#setGrid(number, color)`](#setGrid)
+##### [`#setGrid(number, color)`](#set-grid)
 
 Set the color of a button on the grid
+
+##### [`#destroy()`](#destroy)
+
+Clears internal handlers and removes handlers attached to midi inputs/outputs.
+Does not destroy or close the inputs/outputs. Note that the Launchpad instance
+itself cannot be used again after this has occured.
 
 ## License
 
