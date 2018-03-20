@@ -14,6 +14,7 @@ class Launchpad {
   static controllerToPage(cc) {
     return cc - 104
   }
+
   static pageToController(page) {
     return page + 104
   }

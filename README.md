@@ -12,7 +12,7 @@ npm i @lokua/launchpad --save
 yarn add @lokua/launchpad --save
 ```
 
-# Usage
+## Usage
 
 Launchpad is designed to work in the Browser via the
 [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess), or in
@@ -73,12 +73,12 @@ Fired when a button in the right-most column (labelled A-H) is pressed.
 
 ##### [`#onGrid(callback)`](#on-grid)
 
-Fired when a button in the grid is pressed. `fn` is called with `(note, value)`.
+Fired when a button in the grid is pressed. `callback` is called with `(note, value)`.
 
 #### [`#onMessage(callback)`](#on-message)
 
-Low level handler that is fired with the original, non-normalized midi message, on
-any launchpad page/scene/grid press. Note that this handler does will also
+Low level handler that is fired with the original, non-normalized midi message on
+every launchpad page/scene/grid press. Will also
 fire regardless of the `ignore0Velicty` option. `callback` will be called with
 `(status, data1, data2)`.
 
@@ -104,8 +104,7 @@ Set the color of a button on the grid
 ##### [`#destroy()`](#destroy)
 
 Clears internal handlers and removes handlers attached to midi inputs/outputs.
-Does not destroy or close the inputs/outputs. Note that the Launchpad instance
-itself cannot be used again after this has occured.
+Does not destroy or close the inputs/outputs.
 
 ## License
 

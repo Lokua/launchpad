@@ -38,10 +38,6 @@ launchpad.onGrid(note => {
   grid[note] = !grid[note]
 })
 
-setTimeout(() => {
-  launchpad.destroy()
-}, 1000)
-
 function findPortNumberByRegExp(regExp) {
   return portType => {
     const port = new midi[portType]()
