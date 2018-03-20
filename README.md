@@ -1,15 +1,10 @@
 # launchpad
 
-Node.js program to control a Novation Launchpad MIDI controller.
+Control a Novation Launchpad MIDI controller from Node.js or a Browser.
 Attach handlers to react when buttons are pressed and set their colors
 according to your program's logic.
 
-See [./example.js](example.js) for a basic usage example.
-
 ## Install
-
-`launchpad` has been developed on node@8.1.4 and npm@5.3.0, though should work with any node
-installation that supports arrow functions, const, let, object property shorthand, destructuring.
 
 ```sh
 npm i @lokua/launchpad --save
@@ -17,61 +12,78 @@ npm i @lokua/launchpad --save
 yarn add @lokua/launchpad --save
 ```
 
+# Usage
+
+Launchpad is designed to work in the Browser via the
+[Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/MIDIAccess), or in
+Node.js though the [midi](https://github.com/justinlatimer/node-midi) package.
+In either case you must instantiate an input port and output port that
+references your physical launchpad device. See the respective node/web-midi api
+docs or check the [examples](/examples) folder for examples of how to
+establish these ports in both environments.
+
 ## API
 
-##### [`Launchpad(portName, options)`](#)
+##### [`Launchpad(input, output, options)`](#launchpad)
 
 Class constructor.
 
 ###### Params:
 
-+ **`portName`:**
-An exact string or regexp. Defaults to `/^Launchpad/`
+* **`input`:**
+  an instance of NodeMidiInput when in Node.js or MidiInputPort in a browser
 
-+ **`options`:**
-  + `ignore0Velocity = true`:
-  Causes all registered handlers to ignore when a button is released.
-  This is useful if you are using your Launchpad as a sequencer rather than a
-  push & hold style instrument. For more fine grained control you can set this false and check the
-  `value` parameter in any of the `on*` methods.
-  + `normalize = true`
-  The Launchpad by default has some pretty odd numbering. For example, the first grid row
-  runs from [0, 7] (as expected), but the second row runs from [16, 23]. This is not at
-  all intuitive when it comes to mapping buttons to parameters in software etc, where one would
-  expect the 64th button to be 63. Likewise, the top meta row sends CCs from [104, 111].
-  With `normalize = true`, the top meta row/column sends a normalized [0, 7] range, and the grid
-  runs from [0, 63].
+* **`output`:**
+  an instance of NodeMidiOutput when in Node.js or MidiOutputPort in a browser
+
+* **`options`:**
+  * `ignore0Velocity = true`:
+    Causes all registered handlers to ignore when a button is released.
+    This is useful if you are using your Launchpad as a sequencer or rather than a
+    push & hold style instrument. For more fine grained control you can set this false and check the
+    `value` parameter in any of the `on*` methods.
+  * `normalize = true`
+    The Launchpad by default has some pretty odd numbering. For example, the first grid row
+    runs from [0, 7] (as expected), but the second row runs from [16, 23]. This is not at
+    all intuitive when it comes to mapping buttons to parameters in software etc, where one would
+    expect the 64th button to be 63. Likewise, the top meta row sends CCs from [104, 111].
+    With `normalize = true`, the top meta row/column sends a normalized [0, 7] range, and the grid
+    runs from [0, 63].
 
 ##### [`Launchpad.colors: object`](#)
 
-+ `off`
-+ `redLow`
-+ `red`
-+ `amberLow`
-+ `amber`
-+ `yellow`
-+ `greenLow`
-+ `green`
+* `off`
+* `redLow`
+* `red`
+* `amberLow`
+* `amber`
+* `yellow`
+* `greenLow`
+* `green`
 
-##### [`#onPage(fn)`](#onPage)
+##### [`#onPage(callback)`](#on-page)
 
 Fired when a button in the top "special" row (buttons labeled 1-8) is pressed.
-`fn` is called with `(note, value)`.
+`callback` is called with `(note, value)`.
 
-##### [`#onScene(fn)`](#onScene)
+##### [`#onScene(callback)`](#on-scene)
 
 Fired when a button in the right-most column (labelled A-H) is pressed.
-`fn` is called with `(note, value)`.
+`callback` is called with `(note, value)`.
 
-##### [`#onGrid(fn)`](#onGrid)
+##### [`#onGrid(callback)`](#on-grid)
 
 Fired when a button in the grid is pressed. `fn` is called with `(note, value)`.
 
-##### [`#closePorts()`](#closePorts)
+#### [`#onMessage(callback)`](#on-message)
 
-Close the internal ports used to communicate with Launchpad. This only
-needs to be called if you wish to kill connections while your program is still running,
-otherwise the library will handle that automatically on process termination.
+Low level handler that is fired with the original, non-normalized midi message, on
+any launchpad page/scene/grid press. Note that this handler does will also
+fire regardless of the `ignore0Velicty` option. `callback` will be called with
+`(status, data1, data2)`.
+
+This method is particularly useful when debugging, for example you can
+`launchpad.onMessage(console.log)` to see all incoming messages.
 
 ##### [`#allOff()`](#allOff)
 
@@ -87,7 +99,8 @@ Set the color of a button in the right column
 
 ##### [`#setGrid(number, color)`](#setGrid)
 
-Set the color of a button in the grid
+Set the color of a button on the grid
 
 ## License
+
 MIT

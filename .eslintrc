@@ -1,3 +1,6 @@
 {
-  "extends": "lokua"
+  "extends": "lokua",
+  "rules": {
+    "no-console": 0
+  }
 }

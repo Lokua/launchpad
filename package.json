@@ -2,23 +2,27 @@
   "name": "@lokua/launchpad",
   "version": "0.0.4",
   "main": "lib/index.js",
+  "browser": "dist/Launchpad.js",
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon ./lib/index.js",
-    "example": "nodemon example"
+    "build:dev": "webpack --mode development",
+    "build": "webpack -- --mode production",
+    "test": "node src/index.spec"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/lokua/launchpad.git"
   },
+  "author": "Joshua Kleckner <lokua@lokua.net> (https://lokua.net)",
   "license": "MIT",
-  "dependencies": {
-    "@lokua/midi-util": "0.0.3",
-    "midi": "github:Cycling74/node-midi",
-    "segfault-handler": "~1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.4",
+    "babel-preset-env": "1.6.1",
     "eslint": "^4.3.0",
-    "eslint-config-lokua": "~3.0.0"
+    "eslint-config-lokua": "8.0.0",
+    "midi": "0.9.5",
+    "webpack": "4.1.1",
+    "webpack-cli": "2.0.12"
   }
 }

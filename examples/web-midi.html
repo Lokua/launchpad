@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Launchpad Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+open the console
+<script src="../dist/Launchpad.js"></script>
+<script>
+navigator.requestMIDIAccess().then(access => {
+  const findPort = findPortByRegExp(/launchpad\smini/i)
+  const input = findPort(access.inputs)
+  const output = findPort(access.outputs)
+
+  const launchpad = new Launchpad(input, output)
+  const { off, red, amber, green } = Launchpad.colors
+
+  launchpad.onMessage(console.log)
+
+  launchpad.allOff()
+
+  // our application state
+  const pages = {}
+  const scenes = {}
+  const grid = {}
+  
+  launchpad.onPage(note => {
+    const color = pages[note] ? off : red
+    launchpad.setPage(note, color)
+    pages[note] = !pages[note]
+  })
+
+  launchpad.onScene(note => {
+    const color = scenes[note] ? off : amber
+    launchpad.setScene(note, color)
+    scenes[note] = !scenes[note]
+  })
+
+  launchpad.onGrid(note => {
+    const color = grid[note] ? off : green
+    launchpad.setGrid(note, color)
+    grid[note] = !grid[note]
+  })
+})
+
+function findPortByRegExp(regExp) {
+  return midiPortMap => {
+    for (let port of midiPortMap.values()) {
+      if (regExp.test(port.name)) {
+        return port
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>
