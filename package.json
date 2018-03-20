@@ -1,6 +1,6 @@
 {
   "name": "@lokua/launchpad",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta.0",
   "main": "lib/index.js",
   "browser": "dist/Launchpad.js",
   "scripts": {
